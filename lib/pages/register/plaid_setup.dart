@@ -9,16 +9,16 @@ import 'package:plaid_flutter/plaid_flutter.dart';
 
 import '../register/credentials.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class PlaidPage extends StatefulWidget {
+  const PlaidPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PlaidPage> createState() => _PlaidPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PlaidPageState extends State<PlaidPage> {
   LinkTokenConfiguration? _configuration;
   StreamSubscription<LinkEvent>? _streamEvent;
   StreamSubscription<LinkExit>? _streamExit;
@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void connect() {
+    print("bro");
+    print(_configuration);
     PlaidLink.open(configuration: _configuration!);
   }
 
@@ -99,55 +101,27 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               const Text(
-                'Partition',
+                "Great! Next let's set up connecting your bank account!",
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: const Text(
-                  "The best time to partition your money is today!",
-                  textAlign: TextAlign.center,
-                ),
-              ),
+
               Column(
                 children: <Widget>[
                   ElevatedButton(
-                    onPressed: () => {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const StartAuth(title: "partition")),
-                      )
-                    },
-                    style: ButtonStyle(
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(20)),
-                        backgroundColor:
-                            WidgetStateProperty.all(Colors.lightGreen),
-                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)))),
-                    child: const Text(
-                      'Sign Up',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  // ElevatedButton(
-                  //     onPressed: _createLinkTokenConfiguration,
-                  //     style: ButtonStyle(
-                  //         padding: WidgetStateProperty.all<EdgeInsets>(
-                  //             const EdgeInsets.all(20)),
-                  //         backgroundColor:
-                  //             WidgetStateProperty.all(Colors.lightGreen),
-                  //         shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(12)))),
-                  //     child: const Text(
-                  //       'Get Started!',
-                  //       style: TextStyle(
-                  //           fontSize: 20, fontWeight: FontWeight.bold),
-                  //       textAlign: TextAlign.center,
-                  //     )),
+                      onPressed: _createLinkTokenConfiguration,
+                      style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(20)),
+                          backgroundColor:
+                              WidgetStateProperty.all(Colors.lightGreen),
+                          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)))),
+                      child: const Text(
+                        'Connect Your Bank',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      )),
                   Container(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(feedback),

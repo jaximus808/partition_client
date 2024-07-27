@@ -1,10 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:async';
 import 'pages/homepage/home.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
-  // await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
   runApp(const MaterialApp(
     title: "partition",
     home: MyApp(),

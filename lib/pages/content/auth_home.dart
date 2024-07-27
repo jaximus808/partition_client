@@ -1,24 +1,22 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import '../../network/http_client.dart';
-import '../../classes/generate_token.dart';
+import '../../../network/http_client.dart';
+import '../../../classes/generate_token.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 
-import '../register/credentials.dart';
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class AuthHome extends StatefulWidget {
+  const AuthHome({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<AuthHome> createState() => _AuthHomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AuthHomeState extends State<AuthHome> {
   LinkTokenConfiguration? _configuration;
   StreamSubscription<LinkEvent>? _streamEvent;
   StreamSubscription<LinkExit>? _streamExit;
@@ -105,55 +103,27 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: const Text(
-                  "The best time to partition your money is today!",
+                  "Welcome ur logged in!",
                   textAlign: TextAlign.center,
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () => {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const StartAuth(title: "partition")),
-                      )
-                    },
-                    style: ButtonStyle(
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(20)),
-                        backgroundColor:
-                            WidgetStateProperty.all(Colors.lightGreen),
-                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)))),
-                    child: const Text(
-                      'Sign Up',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  // ElevatedButton(
-                  //     onPressed: _createLinkTokenConfiguration,
-                  //     style: ButtonStyle(
-                  //         padding: WidgetStateProperty.all<EdgeInsets>(
-                  //             const EdgeInsets.all(20)),
-                  //         backgroundColor:
-                  //             WidgetStateProperty.all(Colors.lightGreen),
-                  //         shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(12)))),
-                  //     child: const Text(
-                  //       'Get Started!',
-                  //       style: TextStyle(
-                  //           fontSize: 20, fontWeight: FontWeight.bold),
-                  //       textAlign: TextAlign.center,
-                  //     )),
-                  Container(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(feedback),
-                  )
-                ],
-              ),
+
+              // ElevatedButton(
+              //     onPressed: _createLinkTokenConfiguration,
+              //     style: ButtonStyle(
+              //         padding: WidgetStateProperty.all<EdgeInsets>(
+              //             const EdgeInsets.all(20)),
+              //         backgroundColor:
+              //             WidgetStateProperty.all(Colors.lightGreen),
+              //         shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(12)))),
+              //     child: const Text(
+              //       'Get Started!',
+              //       style: TextStyle(
+              //           fontSize: 20, fontWeight: FontWeight.bold),
+              //       textAlign: TextAlign.center,
+              //     )),
+
               // ElevatedButton(
               //   onPressed: _configuration != null ? () => connect() : null,
               //   child: Text("Open"),
