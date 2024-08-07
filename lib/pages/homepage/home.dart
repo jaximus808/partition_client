@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 
 import '../register/credentials.dart';
+import '../login/credentials.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -19,75 +20,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  LinkTokenConfiguration? _configuration;
-  StreamSubscription<LinkEvent>? _streamEvent;
-  StreamSubscription<LinkExit>? _streamExit;
-  StreamSubscription<LinkSuccess>? _streamSuccess;
-  LinkObject? _successObject;
-
   String feedback = "";
 
   final httpClient = HttpClient();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _streamEvent = PlaidLink.onEvent.listen(_onEvent);
-    _streamExit = PlaidLink.onExit.listen(_onExit);
-    _streamSuccess = PlaidLink.onSuccess.listen(_onSuccess);
-  }
-
-  @override
-  void dispose() {
-    _streamEvent?.cancel();
-    _streamExit?.cancel();
-    _streamSuccess?.cancel();
-    super.dispose();
-  }
-
-  void connect() {
-    PlaidLink.open(configuration: _configuration!);
-  }
-
-  void _createLinkTokenConfiguration() async {
-    //here i need to talk to my server
-
-    try {
-      Token token = await httpClient.getToken();
-      print(token.linkToken);
-      setState(() {
-        _configuration = LinkTokenConfiguration(token: token.linkToken);
-      });
-      setState(() {
-        feedback = "connected!";
-      });
-    } catch (e) {
-      print(e);
-      setState(() {
-        feedback = "could not connect to server!";
-      });
-    }
-  }
-
-  void _onEvent(LinkEvent event) {
-    final name = event.name;
-    final metadata = event.metadata.description();
-    print("onEvent: $name, metadata: $metadata");
-  }
-
-  void _onSuccess(LinkSuccess event) {
-    final token = event.publicToken;
-    final metadata = event.metadata.description();
-    print("onSuccess: $token, metadata: $metadata");
-    setState(() => _successObject = event);
-  }
-
-  void _onExit(LinkExit event) {
-    final metadata = event.metadata.description();
-    final error = event.error?.description();
-    print("onExit metadata: $metadata, error: $error");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,23 +35,25 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               const Text(
                 'Partition',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
               ),
               Container(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: const Text(
                   "The best time to partition your money is today!",
                   textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24),
                 ),
               ),
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () => {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                             builder: (context) =>
-                                const StartAuth(title: "partition")),
+                                const LoginAuth(title: "partition")),
                       )
                     },
                     style: ButtonStyle(
@@ -127,10 +64,35 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: WidgetStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)))),
                     child: const Text(
-                      'Sign Up',
+                      'Sign In',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ElevatedButton(
+                      onPressed: () => {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const StartAuth(title: "partition")),
+                        )
+                      },
+                      style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(20)),
+                          backgroundColor:
+                              WidgetStateProperty.all(Colors.lightGreen),
+                          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)))),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   // ElevatedButton(
@@ -158,10 +120,6 @@ class _MyHomePageState extends State<MyHomePage> {
               //   onPressed: _configuration != null ? () => connect() : null,
               //   child: Text("Open"),
               // ),
-              Text(
-                _successObject?.toJson().toString() ?? "",
-                textAlign: TextAlign.center,
-              )
             ],
           ),
         ),

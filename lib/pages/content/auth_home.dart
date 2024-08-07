@@ -17,76 +17,6 @@ class AuthHome extends StatefulWidget {
 }
 
 class _AuthHomeState extends State<AuthHome> {
-  LinkTokenConfiguration? _configuration;
-  StreamSubscription<LinkEvent>? _streamEvent;
-  StreamSubscription<LinkExit>? _streamExit;
-  StreamSubscription<LinkSuccess>? _streamSuccess;
-  LinkObject? _successObject;
-
-  String feedback = "";
-
-  final httpClient = HttpClient();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _streamEvent = PlaidLink.onEvent.listen(_onEvent);
-    _streamExit = PlaidLink.onExit.listen(_onExit);
-    _streamSuccess = PlaidLink.onSuccess.listen(_onSuccess);
-  }
-
-  @override
-  void dispose() {
-    _streamEvent?.cancel();
-    _streamExit?.cancel();
-    _streamSuccess?.cancel();
-    super.dispose();
-  }
-
-  void connect() {
-    PlaidLink.open(configuration: _configuration!);
-  }
-
-  void _createLinkTokenConfiguration() async {
-    //here i need to talk to my server
-
-    try {
-      Token token = await httpClient.getToken();
-      print(token.linkToken);
-      setState(() {
-        _configuration = LinkTokenConfiguration(token: token.linkToken);
-      });
-      setState(() {
-        feedback = "connected!";
-      });
-    } catch (e) {
-      print(e);
-      setState(() {
-        feedback = "could not connect to server!";
-      });
-    }
-  }
-
-  void _onEvent(LinkEvent event) {
-    final name = event.name;
-    final metadata = event.metadata.description();
-    print("onEvent: $name, metadata: $metadata");
-  }
-
-  void _onSuccess(LinkSuccess event) {
-    final token = event.publicToken;
-    final metadata = event.metadata.description();
-    print("onSuccess: $token, metadata: $metadata");
-    setState(() => _successObject = event);
-  }
-
-  void _onExit(LinkExit event) {
-    final metadata = event.metadata.description();
-    final error = event.error?.description();
-    print("onExit metadata: $metadata, error: $error");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,10 +58,6 @@ class _AuthHomeState extends State<AuthHome> {
               //   onPressed: _configuration != null ? () => connect() : null,
               //   child: Text("Open"),
               // ),
-              Text(
-                _successObject?.toJson().toString() ?? "",
-                textAlign: TextAlign.center,
-              )
             ],
           ),
         ),

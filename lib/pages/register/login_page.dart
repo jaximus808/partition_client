@@ -3,14 +3,12 @@ import 'package:partition/classes/google_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:partition/pages/homepage/home.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../network/http_client.dart';
 import '../../classes/generate_token.dart';
 import '../../google_api/google_page.dart';
-
 import './plaid_setup.dart';
 
 class StartAuth extends StatefulWidget {
@@ -25,7 +23,6 @@ class StartAuth extends StatefulWidget {
 class _StartAuth extends State<StartAuth> {
   final httpClient = HttpClient();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   Future signIn() async {
@@ -81,55 +78,16 @@ class _StartAuth extends State<StartAuth> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimatio) =>
-                                    const MyHomePage(title: "partition"),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(-1.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.ease;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      alignment: Alignment.topLeft,
-                    ),
-                    const Text(
-                      "Sign Up with Your Email, Name, and a Password!",
-                      textAlign: TextAlign.center,
-                    ),
-                  ])),
+              const Text(
+                "Sign in with Your Email and a Password!",
+                textAlign: TextAlign.center,
+              ),
               TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'email...',
                 ),
                 controller: emailController,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'name...',
-                ),
-                controller: nameController,
               ),
               TextField(
                 decoration: const InputDecoration(

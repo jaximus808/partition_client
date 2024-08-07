@@ -1,5 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'pages/homepage/home.dart';
+import 'pages/homepage/loading.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Partition'),
+      home: const LoadingPage(title: 'Partition'),
     );
   }
 }

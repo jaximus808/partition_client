@@ -3,26 +3,27 @@ import 'package:partition/classes/google_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:partition/pages/content/auth_home.dart';
 import 'package:partition/pages/homepage/home.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../register/plaid_setup.dart';
+
 import '../../network/http_client.dart';
-import '../../classes/generate_token.dart';
+import '../../classes/google_signin.dart';
 import '../../google_api/google_page.dart';
 
-import './plaid_setup.dart';
-
-class StartAuth extends StatefulWidget {
-  const StartAuth({super.key, required this.title});
+class LoginAuth extends StatefulWidget {
+  const LoginAuth({super.key, required this.title});
 
   final String title;
 
   @override
-  State<StartAuth> createState() => _StartAuth();
+  State<LoginAuth> createState() => _LoginAuth();
 }
 
-class _StartAuth extends State<StartAuth> {
+class _LoginAuth extends State<LoginAuth> {
   final httpClient = HttpClient();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -41,25 +42,46 @@ class _StartAuth extends State<StartAuth> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Sign In Successful! Creating Account...'),
+            content: Text('Sign In Successful! Logging In...'),
           ),
         );
-        GoogleSignUp signupRes = await httpClient.createUserGoogle(
+        GoogleSignIn signinRes = await httpClient.signUserGoogle(
           user.email,
           user.id,
           user.displayName,
         );
-        if (signupRes.success) {
+        if (signinRes.success) {
           const storage = FlutterSecureStorage();
-          await storage.write(key: "jwt_token", value: signupRes.jwt);
+          await storage.write(key: "jwt_token", value: signinRes.jwt);
+
           if (mounted) {
-            String displayName = user.displayName as String;
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) =>
-                    PlaidPage(title: "partition", displayName: displayName),
-              ),
-            );
+            if (signinRes.error == 3) {
+              String displayName = user.displayName as String;
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PlaidPage(title: "partition", displayName: displayName),
+                ),
+              );
+            } else if (signinRes.page != null) {
+              switch (signinRes.page) {
+                case 1:
+                  String displayName = user.displayName as String;
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => PlaidPage(
+                          title: "partition", displayName: displayName),
+                    ),
+                  );
+                  break;
+                case 2:
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const AuthHome(title: "partition"),
+                    ),
+                  );
+              }
+            }
           }
         }
       }
@@ -113,7 +135,7 @@ class _StartAuth extends State<StartAuth> {
                       alignment: Alignment.topLeft,
                     ),
                     const Text(
-                      "Sign Up with Your Email, Name, and a Password!",
+                      "Sign In with Your Email and Password!",
                       textAlign: TextAlign.center,
                     ),
                   ])),
@@ -123,13 +145,6 @@ class _StartAuth extends State<StartAuth> {
                   hintText: 'email...',
                 ),
                 controller: emailController,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'name...',
-                ),
-                controller: nameController,
               ),
               TextField(
                 decoration: const InputDecoration(
@@ -153,7 +168,7 @@ class _StartAuth extends State<StartAuth> {
                   FontAwesomeIcons.google,
                   color: Colors.red,
                 ),
-                label: Text('Sign in with Google'),
+                label: const Text('Sign in with Google'),
                 onPressed: signIn,
               ),
             ],

@@ -1,18 +1,23 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:partition/pages/homepage/home.dart';
 import '../../network/http_client.dart';
 import '../../classes/generate_token.dart';
+import '../../classes/plaid_setup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../content/auth_home.dart';
 import '../register/credentials.dart';
 
 class PlaidPage extends StatefulWidget {
-  const PlaidPage({super.key, required this.title});
+  const PlaidPage({super.key, required this.title, required this.displayName});
 
   final String title;
+  final String displayName;
 
   @override
   State<PlaidPage> createState() => _PlaidPageState();
@@ -47,7 +52,6 @@ class _PlaidPageState extends State<PlaidPage> {
   }
 
   void connect() {
-    print("bro");
     print(_configuration);
     PlaidLink.open(configuration: _configuration!);
   }
@@ -56,7 +60,15 @@ class _PlaidPageState extends State<PlaidPage> {
     //here i need to talk to my server
 
     try {
-      Token token = await httpClient.getToken();
+      const storage = FlutterSecureStorage();
+      String? userToken = await storage.read(key: "jwt_token");
+      if (userToken == null) {
+        throw "smth went wrong";
+      }
+      Token token = await httpClient.getToken(userToken);
+      if (!token.success) {
+        throw "something went wrong";
+      }
       print(token.linkToken);
       setState(() {
         _configuration = LinkTokenConfiguration(token: token.linkToken);
@@ -64,11 +76,24 @@ class _PlaidPageState extends State<PlaidPage> {
       setState(() {
         feedback = "connected!";
       });
+      connect();
     } catch (e) {
       print(e);
       setState(() {
         feedback = "could not connect to server!";
       });
+    }
+  }
+
+  void signOut() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "jwt_token");
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MyHomePage(title: "partition"),
+        ),
+      );
     }
   }
 
@@ -78,11 +103,39 @@ class _PlaidPageState extends State<PlaidPage> {
     print("onEvent: $name, metadata: $metadata");
   }
 
-  void _onSuccess(LinkSuccess event) {
+  void _onSuccess(LinkSuccess event) async {
     final token = event.publicToken;
     final metadata = event.metadata.description();
     print("onSuccess: $token, metadata: $metadata");
     setState(() => _successObject = event);
+
+    try {
+      const storage = FlutterSecureStorage();
+      String? userToken = await storage.read(key: "jwt_token");
+
+      if (userToken == null) {
+        throw "error";
+      }
+      PlaidSetup plaidSetup = await httpClient.plaidSetup(token, userToken);
+
+      if (plaidSetup.success) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const AuthHome(title: "partition"),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Something went wrong, try again'),
+          ),
+        );
+      }
+    }
   }
 
   void _onExit(LinkExit event) {
@@ -100,12 +153,14 @@ class _PlaidPageState extends State<PlaidPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              const Text(
-                "Great! Next let's set up connecting your bank account!",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              Text(
+                "Welcome ${widget.displayName}! Next let's set up connecting your bank account!",
+                style:
+                    const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
 
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   ElevatedButton(
                       onPressed: _createLinkTokenConfiguration,
@@ -122,6 +177,25 @@ class _PlaidPageState extends State<PlaidPage> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       )),
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ElevatedButton(
+                      onPressed: signOut,
+                      style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(12)),
+                          backgroundColor:
+                              WidgetStateProperty.all(Colors.lightGreen),
+                          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)))),
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                   Container(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(feedback),

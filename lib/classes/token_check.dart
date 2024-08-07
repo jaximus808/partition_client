@@ -1,8 +1,12 @@
 class TokenCheck {
-  final int? loginStatus;
+  final int loginStatus;
   final bool success;
-  final String? username;
-  const TokenCheck({this.loginStatus, required this.success, this.username});
+  final String username;
+  const TokenCheck({
+    required this.loginStatus,
+    required this.success,
+    required this.username,
+  });
 
   factory TokenCheck.fromJson(Map<String, dynamic> json) {
     return switch (json) {

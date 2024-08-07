@@ -11,16 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../content/auth_home.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class LoadingPage extends StatefulWidget {
+  const LoadingPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<LoadingPage> createState() => _MyLoadingPage();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _MyLoadingPage extends State<LoadingPage> with TickerProviderStateMixin {
   late AnimationController controller;
 
   HttpClient httpClient = HttpClient();
@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Future<void> checkDevice() async {
     const storage = FlutterSecureStorage();
     String? potToken = await storage.read(key: "jwt_token");
+    print(potToken);
     if (mounted) {
       if (potToken == null) {
         Navigator.of(context).pushReplacement(
@@ -62,10 +63,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           }
         } else {
           if (mounted) {
+            print(userData.loginStatus);
             if (userData.loginStatus == 1) {
+              String displayName = userData.username;
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) => const PlaidPage(title: "partition")),
+                  builder: (context) =>
+                      PlaidPage(title: "partition", displayName: displayName),
+                ),
               );
             } else {
               Navigator.of(context).pushReplacement(
