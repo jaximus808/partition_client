@@ -23,7 +23,8 @@ class HttpClient {
   }
 
   Future<Token> getToken(userToken) async {
-    final response = await dio.post(createURL("/api/create_link_token"), data: {
+    final response =
+        await dio.post(createURL("/api/fin/create_link_token"), data: {
       "token": userToken,
     });
 
@@ -94,7 +95,7 @@ class HttpClient {
 
   Future<PlaidSetup> plaidSetup(token, jwt) async {
     final response = await dio.post(
-      createURL("/api/register_plaid"),
+      createURL("/api/setup_plaid"),
       data: {
         "access_token": token,
         "user_jwt": jwt,

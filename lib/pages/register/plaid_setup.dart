@@ -100,24 +100,27 @@ class _PlaidPageState extends State<PlaidPage> {
   void _onEvent(LinkEvent event) {
     final name = event.name;
     final metadata = event.metadata.description();
-    print("onEvent: $name, metadata: $metadata");
+    //print("onEvent: $name, metadata: $metadata");
   }
 
   void _onSuccess(LinkSuccess event) async {
     final token = event.publicToken;
     final metadata = event.metadata.description();
-    print("onSuccess: $token, metadata: $metadata");
+    //print("onSuccess: $token, metadata: $metadata");
     setState(() => _successObject = event);
 
+    print("succes!");
     try {
       const storage = FlutterSecureStorage();
       String? userToken = await storage.read(key: "jwt_token");
 
       if (userToken == null) {
+        print("MEOW");
         throw "error";
       }
       PlaidSetup plaidSetup = await httpClient.plaidSetup(token, userToken);
 
+      print("MEOW");
       if (plaidSetup.success) {
         if (mounted) {
           Navigator.of(context).pushReplacement(
@@ -126,8 +129,11 @@ class _PlaidPageState extends State<PlaidPage> {
             ),
           );
         }
+      } else {
+        throw "plaid didn't suceed? error: ${plaidSetup.error}";
       }
     } catch (e) {
+      print(e.toString());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
