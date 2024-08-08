@@ -8,6 +8,7 @@ import '../classes/token_check.dart';
 import '../classes/plaid_setup.dart';
 
 import '../classes/plaid_transactions.dart';
+import '../classes/set_transaction.dart';
 
 //remember to update this
 
@@ -127,6 +128,27 @@ class HttpClient {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       return PlaidTransactions.fromJson(response.data);
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<SetTransaction> plaidUpdateTransaction(jwt, plaidCursor, type) async {
+    final response = await dio.post(
+      createURL("/api/fin/set_transaction"),
+      data: {
+        "user_jwt": jwt,
+        "category": type,
+        "plaid_cursor": plaidCursor,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return SetTransaction.fromJson(response.data);
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.

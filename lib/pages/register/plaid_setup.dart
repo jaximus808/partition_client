@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../../google_api/google_page.dart';
 import '../content/auth_home.dart';
 import '../register/credentials.dart';
 
@@ -87,6 +88,7 @@ class _PlaidPageState extends State<PlaidPage> {
   void signOut() async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "jwt_token");
+    await GoogleSignInApi.logout();
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -127,6 +129,7 @@ class _PlaidPageState extends State<PlaidPage> {
               builder: (context) => AuthHome(
                 title: "partition",
                 jwtToken: userToken,
+                displayName: widget.displayName,
               ),
             ),
           );

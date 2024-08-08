@@ -9,11 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 
 import '../../google_api/google_page.dart';
-import './uncategorized.dart';
-import './content_page.dart';
 
-class AuthHome extends StatefulWidget {
-  const AuthHome(
+class ContentPage extends StatefulWidget {
+  const ContentPage(
       {super.key,
       required this.title,
       required this.jwtToken,
@@ -24,10 +22,10 @@ class AuthHome extends StatefulWidget {
   final String displayName;
 
   @override
-  State<AuthHome> createState() => _AuthHomeState();
+  State<ContentPage> createState() => _ContentPageState();
 }
 
-class _AuthHomeState extends State<AuthHome> {
+class _ContentPageState extends State<ContentPage> {
   HttpClient httpClient = HttpClient();
 
   @override
@@ -60,34 +58,6 @@ class _AuthHomeState extends State<AuthHome> {
         await httpClient.plaidTransactions(jwtToken);
     //print(transactionData.uncatTransactions);
     if (transactionData.success) {
-      if (transactionData.uncatTransactions!.isNotEmpty) {
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => Uncategorized(
-                title: "partition",
-                jwtToken: jwtToken,
-                transactionsData: transactionData,
-                plaidCursor: transactionData.plaidCursor!,
-                displayName: widget.displayName,
-              ),
-            ),
-          );
-        }
-      } else {
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => ContentPage(
-                title: "partition",
-                jwtToken: jwtToken,
-                displayName: widget.displayName,
-              ),
-            ),
-          );
-        }
-      }
-
       print(transactionData);
     } else {
       if (mounted) {
@@ -116,7 +86,7 @@ class _AuthHomeState extends State<AuthHome> {
               Container(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  "Welcome ${widget.displayName}! We're currently loading your financial data!",
+                  "Welcome ${widget.displayName}!",
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -138,26 +108,6 @@ class _AuthHomeState extends State<AuthHome> {
                   ),
                 ),
               ),
-              // ElevatedButton(
-              //     onPressed: _createLinkTokenConfiguration,
-              //     style: ButtonStyle(
-              //         padding: WidgetStateProperty.all<EdgeInsets>(
-              //             const EdgeInsets.all(20)),
-              //         backgroundColor:
-              //             WidgetStateProperty.all(Colors.lightGreen),
-              //         shape: WidgetStateProperty.all(RoundedRectangleBorder(
-              //             borderRadius: BorderRadius.circular(12)))),
-              //     child: const Text(
-              //       'Get Started!',
-              //       style: TextStyle(
-              //           fontSize: 20, fontWeight: FontWeight.bold),
-              //       textAlign: TextAlign.center,
-              //     )),
-
-              // ElevatedButton(
-              //   onPressed: _configuration != null ? () => connect() : null,
-              //   child: Text("Open"),
-              // ),
             ],
           ),
         ),

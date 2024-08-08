@@ -80,6 +80,7 @@ class _LoginAuth extends State<LoginAuth> {
                       builder: (context) => AuthHome(
                         title: "partition",
                         jwtToken: signinRes.jwt,
+                        displayName: user.displayName!,
                       ),
                     ),
                   );

@@ -75,8 +75,11 @@ class _MyLoadingPage extends State<LoadingPage> with TickerProviderStateMixin {
             } else {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) =>
-                        AuthHome(title: "partition", jwtToken: potToken)),
+                    builder: (context) => AuthHome(
+                          title: "partition",
+                          jwtToken: potToken,
+                          displayName: userData.username,
+                        )),
               );
             }
           }

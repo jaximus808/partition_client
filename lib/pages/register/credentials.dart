@@ -44,6 +44,7 @@ class _StartAuth extends State<StartAuth> {
             content: Text('Sign In Successful! Creating Account...'),
           ),
         );
+        print("getting gameplay");
         GoogleSignUp signupRes = await httpClient.createUserGoogle(
           user.email,
           user.id,
@@ -58,6 +59,14 @@ class _StartAuth extends State<StartAuth> {
               MaterialPageRoute(
                 builder: (context) =>
                     PlaidPage(title: "partition", displayName: displayName),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Account creation failed on the server :()'),
               ),
             );
           }
