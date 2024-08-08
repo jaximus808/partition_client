@@ -1,62 +1,22 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import '../../../network/http_client.dart';
-import '../../../classes/plaid_transactions.dart';
+import '../../../classes/generate_token.dart';
 import 'package:flutter/material.dart';
-import '../homepage/home.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 
 class AuthHome extends StatefulWidget {
-  const AuthHome({super.key, required this.title, required this.jwtToken});
+  const AuthHome({super.key, required this.title});
 
   final String title;
-  final String jwtToken;
 
   @override
   State<AuthHome> createState() => _AuthHomeState();
 }
 
 class _AuthHomeState extends State<AuthHome> {
-  HttpClient httpClient = HttpClient();
-
-  @override
-  void initState() {
-    getFinData();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void signOut() async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: "jwt_token");
-    if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const MyHomePage(title: "partition"),
-        ),
-      );
-    }
-  }
-
-  Future<void> getFinData() async {
-    String jwtToken = widget.jwtToken;
-    PlaidTransactions transactionData =
-        await httpClient.plaidTransactions(jwtToken);
-    print(transactionData.uncatTransactions);
-    // if (transaction_data.success) {
-    //   print(transaction_data);
-    // }
-    // else{
-
-    // }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,24 +37,7 @@ class _AuthHomeState extends State<AuthHome> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: ElevatedButton(
-                  onPressed: signOut,
-                  style: ButtonStyle(
-                      padding: WidgetStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(12)),
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.lightGreen),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)))),
-                  child: const Text(
-                    'Sign Out',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
+
               // ElevatedButton(
               //     onPressed: _createLinkTokenConfiguration,
               //     style: ButtonStyle(

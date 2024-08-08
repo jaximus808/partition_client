@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:partition/pages/homepage/home.dart';
 import '../../network/http_client.dart';
 import '../../classes/generate_token.dart';
@@ -125,7 +124,10 @@ class _PlaidPageState extends State<PlaidPage> {
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => const AuthHome(title: "partition"),
+              builder: (context) => AuthHome(
+                title: "partition",
+                jwtToken: userToken,
+              ),
             ),
           );
         }

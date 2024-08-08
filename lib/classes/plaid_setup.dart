@@ -9,11 +9,17 @@ class PlaidSetup {
         'success': bool success,
         'error': int error,
       } =>
-        PlaidSetup(success: success, error: error),
+        PlaidSetup(
+          success: success,
+          error: error,
+        ),
       {
         'success': bool success,
       } =>
-        PlaidSetup(success: success, error: -1),
+        PlaidSetup(
+          success: success,
+          error: -1,
+        ),
       _ => throw const FormatException('Failed to load token.'),
     };
   }

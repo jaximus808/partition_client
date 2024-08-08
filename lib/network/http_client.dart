@@ -7,6 +7,8 @@ import '../classes/generate_token.dart';
 import '../classes/token_check.dart';
 import '../classes/plaid_setup.dart';
 
+import '../classes/plaid_transactions.dart';
+
 //remember to update this
 
 //REMEMBER FOR TMRW lol
@@ -95,9 +97,9 @@ class HttpClient {
 
   Future<PlaidSetup> plaidSetup(token, jwt) async {
     final response = await dio.post(
-      createURL("/api/setup_plaid"),
+      createURL("/api/fin/setup_plaid"),
       data: {
-        "access_token": token,
+        "public_token": token,
         "user_jwt": jwt,
       },
     );
@@ -106,6 +108,25 @@ class HttpClient {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       return PlaidSetup.fromJson(response.data);
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<PlaidTransactions> plaidTransactions(jwt) async {
+    final response = await dio.post(
+      createURL("/api/fin/get_transactions"),
+      data: {
+        "user_jwt": jwt,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return PlaidTransactions.fromJson(response.data);
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.

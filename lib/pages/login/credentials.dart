@@ -77,11 +77,22 @@ class _LoginAuth extends State<LoginAuth> {
                 case 2:
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => const AuthHome(title: "partition"),
+                      builder: (context) => AuthHome(
+                        title: "partition",
+                        jwtToken: signinRes.jwt,
+                      ),
                     ),
                   );
               }
             }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Something Went Wrong During Sign In :()'),
+              ),
+            );
           }
         }
       }
