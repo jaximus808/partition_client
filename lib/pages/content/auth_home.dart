@@ -82,6 +82,7 @@ class _AuthHomeState extends State<AuthHome> {
                 title: "partition",
                 jwtToken: jwtToken,
                 displayName: widget.displayName,
+                transactionData: transactionData,
               ),
             ),
           );
@@ -103,16 +104,20 @@ class _AuthHomeState extends State<AuthHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Partition',
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              const Text(
-                'Partition',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
               Container(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
@@ -127,8 +132,8 @@ class _AuthHomeState extends State<AuthHome> {
                   style: ButtonStyle(
                       padding: WidgetStateProperty.all<EdgeInsets>(
                           const EdgeInsets.all(12)),
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.lightGreen),
+                      backgroundColor: WidgetStateProperty.all(
+                          const Color.fromRGBO(139, 195, 74, 1)),
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)))),
                   child: const Text(

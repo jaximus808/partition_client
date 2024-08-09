@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-class PieChatWidget extends StatefulWidget {
-  const PieChatWidget({
+class PieChartWidget extends StatefulWidget {
+  const PieChartWidget({
     super.key,
     required this.totalIncome,
   });
@@ -10,10 +10,10 @@ class PieChatWidget extends StatefulWidget {
   final double totalIncome;
 
   @override
-  State<PieChatWidget> createState() => _PieChatWidgetState();
+  State<PieChartWidget> createState() => _PieChatWidgetState();
 }
 
-class _PieChatWidgetState extends State<PieChatWidget> {
+class _PieChatWidgetState extends State<PieChartWidget> {
   double want = 0.3;
   double need = 0.5;
   double invest = 0.2;
@@ -42,17 +42,17 @@ class _PieChatWidgetState extends State<PieChatWidget> {
       chartLegendSpacing: 32,
       chartRadius: MediaQuery.of(context).size.width / 1.5,
       colorList: const <Color>[
-        Color.fromRGBO(255, 0, 0, 1),
-        Color.fromRGBO(0, 255, 0, 1),
-        Color.fromRGBO(0, 0, 255, 1),
+        Color.fromRGBO(87, 122, 47, 1),
+        Color.fromRGBO(119, 168, 61, 1),
+        Color.fromRGBO(148, 209, 77, 1),
       ],
-      initialAngleInDegree: 0,
+      initialAngleInDegree: 270,
       chartType: ChartType.disc,
       ringStrokeWidth: 32,
       centerText: "Total Budget",
       legendOptions: const LegendOptions(
         showLegendsInRow: true,
-        legendPosition: LegendPosition.bottom,
+        legendPosition: LegendPosition.top,
         showLegends: true,
         legendTextStyle: TextStyle(
           fontWeight: FontWeight.bold,

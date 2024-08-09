@@ -2,10 +2,15 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:http/http.dart' as http;
 import 'package:partition/classes/set_transaction.dart';
+import 'package:partition/pages/content/auth_home.dart';
 import 'package:partition/pages/content/content_page.dart';
 import '../../classes/plaid_transactions.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../homepage/home.dart';
+
+import '../../google_api/google_page.dart';
 import '../../../network/http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
@@ -64,6 +69,19 @@ class _UncategorizedState extends State<Uncategorized>
     super.dispose();
   }
 
+  void signOut() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "jwt_token");
+    await GoogleSignInApi.logout();
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MyHomePage(title: "partition"),
+        ),
+      );
+    }
+  }
+
   void updateTransaction(String type) async {
     if (loading) return;
 
@@ -73,12 +91,13 @@ class _UncategorizedState extends State<Uncategorized>
       widget.plaidCursor,
       type,
     );
+
     if (setTransaction.success) {
       if (uncatTranIter + 1 == uncatTrans.length) {
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => ContentPage(
+              builder: (context) => AuthHome(
                 title: "partition",
                 jwtToken: widget.jwtToken,
                 displayName: widget.displayName,
@@ -124,18 +143,41 @@ class _UncategorizedState extends State<Uncategorized>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Partition',
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              const Text(
-                'Partition',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              const Column(
+              Column(
                 children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ElevatedButton(
+                      onPressed: signOut,
+                      style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(12)),
+                          backgroundColor:
+                              WidgetStateProperty.all(Colors.lightGreen),
+                          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)))),
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                   Text(
                     "Before we begin, we'll need you to categorize the expense we've found.",
                     textAlign: TextAlign.center,
