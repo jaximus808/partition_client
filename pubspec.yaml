@@ -42,6 +42,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   google_sign_in: ^6.2.1
   flutter_secure_storage: ^9.2.2
+  pie_chart: ^5.4.0
 
 dev_dependencies:
   flutter_test:

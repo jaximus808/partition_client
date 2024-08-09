@@ -8,6 +8,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:plaid_flutter/plaid_flutter.dart';
 
+import '../../widgets/pie_chat.dart';
+
 import '../../google_api/google_page.dart';
 
 class ContentPage extends StatefulWidget {
@@ -84,13 +86,6 @@ class _ContentPageState extends State<ContentPage> {
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  "Welcome ${widget.displayName}!",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Container(
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
                   onPressed: signOut,
@@ -108,6 +103,14 @@ class _ContentPageState extends State<ContentPage> {
                   ),
                 ),
               ),
+              Container(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  "Welcome ${widget.displayName}!",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const PieChatWidget(totalIncome: 5000),
             ],
           ),
         ),
